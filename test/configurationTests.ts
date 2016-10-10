@@ -34,39 +34,41 @@ describe("Configuration", () => {
             rules: {foo: "bar"},
             rulesDirectory: ["foo"],
         });
-        assert.deepEqual(extendConfigurationFile({
+        const actualConfig = extendConfigurationFile({
             rules: {
                 a: 1,
-                b: 2,
+                b: 1,
             },
             rulesDirectory: ["foo", "bar"],
         }, {
             rules: {
-                b: 1,
+                b: 2,
                 c: 3,
             },
             rulesDirectory: "baz",
-        }), {
+        });
+        const expectedConfig = {
             rules: {
                 a: 1,
                 b: 2,
                 c: 3,
             },
             rulesDirectory: ["foo", "bar", "baz"],
-        });
+        };
+        assert.deepEqual(actualConfig, expectedConfig);
     });
 
     describe("loadConfigurationFromPath", () => {
         it("extends with relative path", () => {
-            let config = loadConfigurationFromPath("./test/config/tslint-extends-relative.json");
+            const config = loadConfigurationFromPath("./test/config/tslint-extends-relative.json");
 
             assert.isArray(config.rulesDirectory);
-            assert.isTrue(config.rules["no-fail"]);
-            assert.isFalse(config.rules["always-fail"]);
+            assert.isTrue(config.rules["no-fail"], "did not pick up 'no-fail' in base config");
+            assert.isFalse(config.rules["always-fail"], "did not set 'always-fail' in top config");
         });
 
         it("extends with package", () => {
-            let config = loadConfigurationFromPath("./test/config/tslint-extends-package.json");
+            const config = loadConfigurationFromPath("./test/config/tslint-extends-package.json");
 
             assert.isArray(config.rulesDirectory);
             /* tslint:disable:object-literal-sort-keys */
@@ -79,7 +81,7 @@ describe("Configuration", () => {
         });
 
         it("extends with package without customization", () => {
-            let config = loadConfigurationFromPath("./test/config/tslint-extends-package-no-mod.json");
+            const config = loadConfigurationFromPath("./test/config/tslint-extends-package-no-mod.json");
 
             assert.isArray(config.rulesDirectory);
             assert.deepEqual(config.rules, {
@@ -150,7 +152,7 @@ describe("Configuration", () => {
                 "always-fail": false,
                 "no-fail": true,
                 "rule-one": true,
-                "rule-two": false,
+                "rule-two": true,
             });
         });
 
