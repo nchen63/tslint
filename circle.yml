@@ -2,8 +2,8 @@ general:
   branches:
     ignore:
       - gh-pages
-machine:
-  pre:
+checkout:
+  post:
     - node ./scripts/assertMinCircleNodes.js $CIRCLE_NODE_TOTAL
 dependencies:
   pre:
